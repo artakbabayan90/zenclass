@@ -1,26 +1,75 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="container">
+    <div class="row clearfix">
+      <div class="col-lg-12">
+        <div class="card chat-app">
+          <users @getUser="getUser"/>
+          <div class="chat" v-if="currentUser">
+            <div class="chat-header clearfix" >
+              <div class="row" >
+                <div class="col-lg-6">
+                  <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
+                    <img :src="src" alt="avatar">
+                  </a>
+                  <div class="chat-about">
+                    <h6 class="m-b-0">{{currentUser.name}}</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <messages :userId="currentUser.id"></messages>
+          </div>
+          <div class="chat" v-else>
+            <div class="chat-header clearfix" >
+              <div class="row" >
+                <div class="col-lg-6">
+                  <div class="chat-about">
+                    <h6 class="m-b-0">Chose User</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import {mapActions} from 'vuex'
+import Users from "@/components/Users";
+import Messages from "@/components/Messages";
+import './assets/index.css'
 export default {
   name: 'App',
+  data(){
+    return {
+      currentUser: '',
+      messages: {}
+    }
+  },
   components: {
-    HelloWorld
-  }
+    Users,
+    Messages
+  },
+  computed:{
+    src(){
+      return this.currentUser.imgSrc?this.currentUser.imgSrc:"https://bootdey.com/img/Content/avatar/avatar1.png"
+    }
+  },
+  methods:{
+    ...mapActions(['fetchUsers']),
+    getUser(user){
+      this.currentUser = user
+    }
+  },
+  async mounted(){
+    this.fetchUsers()
+  },
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
 </style>
